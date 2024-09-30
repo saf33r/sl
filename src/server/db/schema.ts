@@ -2,11 +2,13 @@
 // https://orm.drizzle.team/docs/sql-schema-declaration
 
 import { sql } from "drizzle-orm";
+
 import {
   index,
   pgTableCreator,
   serial,
   timestamp,
+  unique,
   varchar,
 } from "drizzle-orm/pg-core";
 
@@ -18,11 +20,12 @@ import {
  */
 export const createTable = pgTableCreator((name) => `demo_${name}`);
 
-export const posts = createTable(
-  "post",
+export const users = createTable(
+  "user",
   {
     id: serial("id").primaryKey(),
     name: varchar("name", { length: 256 }),
+    email: varchar("email", { length: 256 }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -31,6 +34,7 @@ export const posts = createTable(
     ),
   },
   (example) => ({
-    nameIndex: index("name_idx").on(example.name),
+    usersNameIndex: index("user_name_idx").on(example.name),
+    usersEmailIndex: unique("user_email_idx").on(example.email),
   }),
 );
